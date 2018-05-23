@@ -1,0 +1,69 @@
+body,html {
+	font-family:Verdana, Arial, Helvetica, sans-serif; 
+	font-size:11px;
+}
+.title {
+    font-size: 20px;
+    font-weight: bold;
+    padding: 0 0 10px;
+    margin: 0 0 20px;
+    border-bottom: 1px solid #ccc;
+}
+.loader {
+	display: none;
+}
+.formWrapper {
+    padding: 0 0 10px;
+    margin: 0 0 20px;
+    border-bottom: 1px solid #eee;
+}
+.grid {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+}
+.gridRow {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+.gridRow.gridHeader {
+    font-weight: bold;
+    background: #fff;
+}
+.gridCell {
+    margin: 5px 10px;
+    min-width: 120px;
+}
+.gridCell.wide {
+	min-width: 300px;
+}
+
+#tblCountryList {
+    width: 640px;
+}
+#tblCountryList .gridRow:nth-child(odd) {
+    background: #efefef;
+}
+
+.gridCell.cName {
+    min-width: 200px;
+}
+.gridCell div {
+	float: left;
+	margin: 0 0 10px;
+}
+.gridCell .x-name {
+	clear: left;
+	width: 80px;
+}
+.gridCell .x-prop {
+	clear: right;
+	padding: 0 0 0 20px;
+}
+
+#formAddData select {
+	width: 100px;
+    height: 22px;
+}
