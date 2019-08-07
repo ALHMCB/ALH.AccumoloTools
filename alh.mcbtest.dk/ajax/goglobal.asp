@@ -1,72 +1,4 @@
 <%
-doDbWrite = true
-%>
-<!--#include virtual="/includes/basic_inc.asp"-->
-
-<%
-postAction = replace(Request.Form("f"),"'","''")
-siteguid = replace(Request.Form("siteguid"),"'","''")
-
-select case postAction
-	case "loadSites"
-		call getSiteList()
-	case "loadData"
-		call getLangAndCurrency()
-	case "loadLC"
-		call getAvailableLangAndCurrency()
-	case "loadCountry"
-		call getCountryList()
-	case "addEntity"
-		call addEntity()
-end select
-
-sub getSiteList()
-	siteSQL = "SELECT SiteGuid, CostumerFullname FROM TBLadmin_sites WHERE AccountingMarkAsInactive = 0 AND SiteTypeGuid in (3, 6) ORDER BY CostumerFullname"
-	set rsSites = conn.Execute(siteSQL)
-
-	if not rsSites.eof then
-		xSites = ""
-		do while not rsSites.eof
-			xSites = xSites & "{""Guid"":""" & rsSites("SiteGuid") & """, ""Name"":""" & rsSites("CostumerFullname") & """},"
-			rsSites.MoveNext
-		loop
-
-		xSites = truncateJSONString(xSites)
-	end if
-	rsSites.close
-	set rsSites = nothing
-
-	xSites = "[" & xSites & "]"
-
-	response.AddHeader "X-JSON", "{""EntityType"":""Site""}"
-	response.Write(xSites)
-end sub
-
-sub getCountryList()
-	sqlGetCountryList = "SELECT Name, Guid, IsoCode, IsEuMember from TBLCommerce_Country " &_
-					"WHERE [Exists] = 1 " &_
-					"ORDER BY IsEuMember DESC, Name"
-
-	set rsCountryList = conn.execute(sqlGetCountryList)
-	if not rsCountryList.eof then
-		countryList = ""
-
-		do while not rsCountryList.eof
-			countryList = countryList & "{""Name"":""" & rsCountryList("Name") & """, ""Guid"":""" & rsCountryList("Guid") & """, ""IsoCode"":""" & rsCountryList("IsoCode") & """, ""IsEuMember"":""" & rsCountryList("IsEuMember") & """},"
-			rsCountryList.MoveNext
-		loop
-
-		countryList = truncateJSONString(countryList)
-		rsCountryList.close
-		set rsCountryList = nothing
-	end if
-
-	gData = "[" & countryList & "]"
-
-	response.AddHeader "X-JSON", "{""EntityType"":""CountryList""}"
-	response.Write(gData)
-end sub
-
 sub getLangAndCurrency()
 	sqlLang = "SELECT  A.LanguageGuid AS [Guid], UPPER(B.Code) AS [Language], A.[Standard] " &_ 
 				"FROM TBLcommerce_siteLanguage A INNER JOIN TBLCommerce_language B ON A.LanguageGuid = B.Guid " &_
@@ -190,15 +122,4 @@ sub addEntity()
 
 end sub
 
-function truncateJSONString(json)
-	if len(json) > 1 then
-		json = Left(json, len(json) - 1)
-	end if
-	truncateJSONString = json
-end function
-
 %>
-<!--#include virtual="/global_inc/site_includes/conn_close.asp"-->
-<%if doDbWrite then%>
-<!--#include virtual="/global_inc/site_includes/connWrite_close.asp"-->
-<%end if%>

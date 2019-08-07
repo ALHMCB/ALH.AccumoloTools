@@ -29,7 +29,7 @@ var Location = new function () {
 
 var GoGlobal = new function() {
 	self = this;
-	var $proxy = "ajax/goglobalproxy.asp";
+	var $proxy = "ajax/proxy.asp";
 	var $siteGuid = 0;
 	var $loader;
 	var $message;

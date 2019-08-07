@@ -1,0 +1,32 @@
+﻿<SCRIPT LANGUAGE=VBscript RUNAT=Server>
+Sub Application_OnStart()
+	Application.Lock
+	'***************************** Læs Server Config ************************************
+	connStrInt = 0
+	picServInt = 0
+	fileServInt = 0
+	set xmlDoc = Server.CreateObject("MSXML2.DOMDocument.6.0")
+	xmlDoc.async = false
+	xmlDoc.load("C:\\serverConfig.xml")
+	set configRoot = xmlDoc.documentElement
+	'Application("Conn") = configRoot.childNodes(0).childNodes(23).text
+	Application("Conn") = configRoot.childNodes(0).childNodes(connStrInt).text
+	Application("ConnWrite") = configRoot.childNodes(0).childNodes(22).text		
+	Application("PictureServ") = configRoot.childNodes(1).childNodes(picServInt).text
+	Application("FileServe") = configRoot.childNodes(2).childNodes(fileServInt).text
+	Application("UploadUserName") = configRoot.childNodes(4).childNodes(0).childNodes(0).text
+	Application("UploadUserPass") = configRoot.childNodes(4).childNodes(0).childNodes(1).text
+	Application("rubrikUplPicPath") = configRoot.childNodes(3).childNodes(7).text
+	Application("ImagePath") = configRoot.childNodes(3).childNodes(imagePathInt).text	
+	Application("PictureUploadPath") = configRoot.childNodes(3).childNodes(0).text
+	Application("UploadPath_serie") = configRoot.childNodes(3).childNodes(1).text
+	Application("UploadetFiles_Path") = configRoot.childNodes(3).childNodes(3).text
+	Application("Temp_UploadPath_serie") = configRoot.childNodes(3).childNodes(2).text
+	Application("UploadPath_single") = configRoot.childNodes(3).childNodes(8).text
+	Application("MailHost") = "mail.mcb.dk"
+	Application("ProtectedFilePath") = configRoot.childNodes(3).childNodes(16).text
+	set xmlDoc = nothing
+	'************************************************************************************	
+	Application.Unlock
+End Sub
+</SCRIPT>

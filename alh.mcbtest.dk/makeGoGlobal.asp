@@ -6,9 +6,9 @@
 		<link rel="stylesheet" href="css/theme.css" type="text/css" />
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js"></script>
-		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
-		<script type="text/javascript" src="javascripts/functions.js"></script>
-		<!--script type="text/javascript" src="javascripts/goglobal.js"></script-->
+		<script type="text/javascript" src="javascripts/config.js"></script>
+		<script type="text/javascript" src="javascripts/utils.js"></script>
+		<script type="text/javascript" src="javascripts/goglobal.js"></script>
 	</head>
 	<body>
 		<div class="title">
@@ -17,11 +17,11 @@
 		<div class="formWrapper">
 			<form name="formGoGlobalView" id="formGoGlobalView">
 				<input type="hidden" id="formAction" name="f" value="loadData"/>
-				<div class="loader">Loading...</div>
+				<div class="loader"><span>Loading...</span></div>
 				<div class="message" id="messageContainer"></div>
 				<div class="formTitle"></div>
 				<div class="grid">
-					<div class="gridRow">
+					<div class="gridRow gridHeader">
 						<div class="gridCell">Sites:</div>
 						<div class="gridCell wide">
 							<select name="siteguid" id="ddlSiteList">
@@ -29,7 +29,7 @@
 							</select>
 						</div>
 					</div>
-					<div class="gridRow">
+					<div class="gridRow gridHeader">
 						<div class="gridCell wide">Added languages:</div>
 						<div class="gridCell wide">Added currencies:</div>
 					</div>
@@ -43,16 +43,19 @@
 		<div class="formWrapper">
 			<form name="formAddData" id="formAddData">
 				<input type="hidden" id="formAction" name="f" value="addLC"/>
-				<div class="formTitle">Add extra languages and currencies:</div>
+				<div class="formTitle"></div>
 				<div class="grid">
-					<div class="gridRow">
+					<div class="gridRow gridHeader">
+						<div class="gridCell">Add extra languages and currencies:</div>
+					</div>
+					<div class="gridRow gridHeader">
 						<div class="gridCell">Languages:</div>
 						<div class="gridCell wide">
 							<select name="sLanguage" id="sLanguage"></select>
 							<button type="button" class="x-button" name="btnAddLanguage" id="btnAddLanguage">Add language</button>
 						</div>
 					</div>
-					<div class="gridRow">
+					<div class="gridRow gridHeader">
 						<div class="gridCell">Currencies:</div>
 						<div class="gridCell wide">
 							<select name="sCurrency" id="sCurrency"></select>
@@ -70,8 +73,11 @@
 		<div class="formWrapper">
 			<form name="formCountryFilter" id="formCountryFilter">
 				<input type="hidden" id="formAction" name="f" value="fc"/>
-				<div class="formTitle">List of country:</div>
+				<div class="formTitle"></div>
 				<div class="grid">
+					<div class="gridRow gridHeader">
+						<div class="gridCell">List of country:</div>
+					</div>
 					<div class="gridRow">
 						<div class="gridCell wide">
 							<input type="text" placeholder="Filter country" name="txtFilter" id="txtFilter">
