@@ -118,7 +118,9 @@ var SiteUtils = new function() {
 	}
 
 	this.showLoader = function() {
-		$loader.show();
+		if($loader) {
+			$loader.show();
+		}
 	}
 
 	this.hideLoader = function() {

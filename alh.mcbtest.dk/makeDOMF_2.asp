@@ -5,9 +5,10 @@
 		<title>MCB DOMF webshop premilinary setup</title>
 		<link rel="stylesheet" href="css/theme.css" type="text/css" />
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-		<script type="text/javascript" src="javascripts/config.js"></script>
-		<script type="text/javascript" src="javascripts/utils.js"></script>
-		<script type="text/javascript" src="javascripts/domf.js"></script>
+		<script type="text/javascript" src="src/classes/PageURL.js"></script>
+		<script type="text/javascript" src="src/classes/PageBase.js"></script>
+		<script type="text/javascript" src="src/classes/PageDOMF.js"></script>
+		<script type="text/javascript" src="src/apps/AppDOMF.js"></script>
 	</head>
 	<body>
 		<div class="title">

@@ -1,104 +1,88 @@
 <%
+function checkDOMFAvailability()
+	sqlDOMFCheck = 	"Declare @SiteGuid int = " & siteguid & ";" &_
+					"Select CASE WHEN EXISTS ( " &_
+						"SELECT PageSystemGuid " &_
+						"FROM TBLpage_SiteSystem " &_
+						"WHERE SiteGuid = @SiteGuid AND PageSystemGuid = 1" &_
+					") " &_
+					"THEN Cast(1 AS BIT) " &_
+					"ELSE Cast(0 AS BIT) END;"
 
-function checkDOMFAvailability(byRef xPageSystem, byRef xBlockGroup, byRef xPageGroup, byRef xBoxTemplate, byRef xWebsiteSkin)
-	sqlSiteSettings = "Declare @SiteGuid int = " & siteguid & ";" &_
-						"Select A.*, B.Name From TBLpage_SiteSystem A INNER JOIN TBLpage_system B " &_
-							"ON A.PageSystemGuid = B.Guid " &_
-							"Where siteguid = @SiteGuid;" &_
-						"Select A.*, B.Name From TBLpage_siteBlockGroup A INNER JOIN TBLpage_BlockGroup B " &_
-							"ON A.PageBlockGroupGuid = B.Guid " &_
-							"Where SiteGuid = @SiteGuid;" &_
-						"Select A.*, B.Name From TBLpage_sitePageGroup A INNER JOIN TBLpage_PageGroup B " &_
-							"ON A.PagePageGroupGuid = B.Guid " &_
-							"Where SiteGuid = @SiteGuid;" &_
-						"Select A.*, B.Name From TBLSite_BoxTemplateGroupSite A INNER JOIN TBLSite_BoxTemplateGroup B " &_
-							"ON A.boxTemplateGroupGuid = B.Guid " &_
-							"Where SiteGuid = @SiteGuid;" &_
-						"Select A.*, B.Name From TBLSite_WebsiteSkinGroupSite A INNER JOIN TBLSite_WebsiteSkinGroup B " &_
-							"ON A.websiteSkinGroupGuid = B.Guid " &_
-							"Where SiteGuid = @SiteGuid;"
+	set rsDOMFCheck = conn.execute(sqlDOMFCheck)
 
-	set rsSiteSettings = conn.Execute(sqlSiteSettings)
-
-	isDOMF = false
-
-	if not rsSiteSettings.eof then
-		do while not rsSiteSettings.eof
-			xPageSystem = xPageSystem & "{""Guid"":""" & rsSiteSettings("PageSystemGuid") & """, ""Name"":""" & rsSiteSettings("Name") & """},"
-			if Cint(rsSiteSettings("PageSystemGuid")) = 1 then
-				isDOMF = true
-			end if
-			rsSiteSettings.MoveNext
-		loop
-
-		xPageSystem = truncateJSONString(xPageSystem)
-
+	if not rsDOMFCheck.eof then
+		isDOMF = Cbool(rsDOMFCheck.Fields.Item(0))
 	end if
+	rsDOMFCheck.close
+	set rsDOMFCheck = nothing
 
-	set rsSiteSettings = rsSiteSettings.NextRecordset
-	if not rsSiteSettings.eof then
-		do while not rsSiteSettings.eof
-			xBlockGroup = xBlockGroup & "{""Guid"":""" & rsSiteSettings("PageBlockGroupGuid") & """, ""Name"":""" & rsSiteSettings("Name") & """},"
-			rsSiteSettings.MoveNext
-		loop
-
-		xBlockGroup = truncateJSONString(xBlockGroup)
-
-	end if
-
-	set rsSiteSettings = rsSiteSettings.NextRecordset
-	if not rsSiteSettings.eof then
-		do while not rsSiteSettings.eof
-			xPageGroup = xPageGroup & "{""Guid"":""" & rsSiteSettings("PagePageGroupGuid") & """, ""Name"":""" & rsSiteSettings("Name") & """},"
-			rsSiteSettings.MoveNext
-		loop
-
-		xPageGroup = truncateJSONString(xPageGroup)
-
-	end if
-
-	set rsSiteSettings = rsSiteSettings.NextRecordset
-	if not rsSiteSettings.eof then
-		do while not rsSiteSettings.eof
-			xBoxTemplate = xBoxTemplate & "{""Guid"":""" & rsSiteSettings("boxTemplateGroupGuid") & """, ""Name"":""" & rsSiteSettings("Name") & """},"
-			rsSiteSettings.MoveNext
-		loop
-
-		xBoxTemplate = truncateJSONString(xBoxTemplate)
-
-	end if
-
-	set rsSiteSettings = rsSiteSettings.NextRecordset
-	if not rsSiteSettings.eof then
-		do while not rsSiteSettings.eof
-			xWebsiteSkin = xWebsiteSkin & "{""Guid"":""" & rsSiteSettings("websiteSkinGroupGuid") & """, ""Name"":""" & rsSiteSettings("Name") & """},"
-			rsSiteSettings.MoveNext
-		loop
-
-		xWebsiteSkin = truncateJSONString(xWebsiteSkin)
-
-	end if
-
-	rsSiteSettings.close
-	set rsSiteSettings = nothing
-	
 	checkDOMFAvailability = isDOMF
-
 end function
 
+
 sub getDOMFStatus()
-	xPageSystem		= ""
-	xBlockGroup		= ""
-	xPageGroup		= ""
-	xBoxTemplate	= ""
-	xWebsiteSkin	= ""
+	sqlDOMFStatus = "Declare @SiteGuid int = " & siteguid & ";" &_
+					"Select A.PageSystemGuid AS [Guid], B.Name From TBLpage_SiteSystem A INNER JOIN TBLpage_system B " &_
+						"ON A.PageSystemGuid = B.Guid " &_
+						"Where siteguid = @SiteGuid FOR JSON PATH;" &_
+					"Select A.PageBlockGroupGuid AS [Guid], B.Name From TBLpage_siteBlockGroup A INNER JOIN TBLpage_BlockGroup B " &_
+						"ON A.PageBlockGroupGuid = B.Guid " &_
+						"Where SiteGuid = @SiteGuid FOR JSON PATH;" &_
+					"Select A.PagePageGroupGuid AS [Guid], B.Name From TBLpage_sitePageGroup A INNER JOIN TBLpage_PageGroup B " &_
+						"ON A.PagePageGroupGuid = B.Guid " &_
+						"Where SiteGuid = @SiteGuid FOR JSON PATH;" &_
+					"Select A.boxTemplateGroupGuid AS [Guid], B.Name From TBLSite_BoxTemplateGroupSite A INNER JOIN TBLSite_BoxTemplateGroup B " &_
+						"ON A.boxTemplateGroupGuid = B.Guid " &_
+						"Where SiteGuid = @SiteGuid FOR JSON PATH;" &_
+					"Select A.websiteSkinGroupGuid AS [Guid], B.Name From TBLSite_WebsiteSkinGroupSite A INNER JOIN TBLSite_WebsiteSkinGroup B " &_
+						"ON A.websiteSkinGroupGuid = B.Guid " &_
+						"Where SiteGuid = @SiteGuid FOR JSON PATH;"
 
-	isDOMFSite = checkDOMFAvailability(xPageSystem, xBlockGroup, xPageGroup, xBoxTemplate, xWebsiteSkin)
+	set rsDOMFStatus = conn.Execute(sqlDOMFStatus)
+	
+	if not rsDOMFStatus.eof then
+		xPageSystem = rsDOMFStatus.Fields.Item(0)
+	else
+		xPageSystem = "[]"
+	end if
 
+	set rsDOMFStatus = rsDOMFStatus.NextRecordset
+	if not rsDOMFStatus.eof then
+		xBlockGroup = rsDOMFStatus.Fields.Item(0)
+	else
+		xBlockGroup = "[]"
+	end if
+
+	set rsDOMFStatus = rsDOMFStatus.NextRecordset
+	if not rsDOMFStatus.eof then
+		xPageGroup = rsDOMFStatus.Fields.Item(0)
+	else
+		xPageGroup = "[]"
+	end if
+
+	set rsDOMFStatus = rsDOMFStatus.NextRecordset
+	if not rsDOMFStatus.eof then
+		xBoxTemplate = rsDOMFStatus.Fields.Item(0)
+	else
+		xBoxTemplate = "[]"
+	end if
+
+	set rsDOMFStatus = rsDOMFStatus.NextRecordset
+	if not rsDOMFStatus.eof then
+		xWebsiteSkin = rsDOMFStatus.Fields.Item(0)
+	else
+		xWebsiteSkin = "[]"
+	end if
+
+	rsDOMFStatus.close
+	set rsDOMFStatus = nothing
+	
 	' Process query result
-	xSettings = "{""PageSystem"":[" & xPageSystem & "], ""BlockGroup"":[" & xBlockGroup & "], ""PageGroup"":[" & xPageGroup & "], ""BoxTemplate"":[" & xBoxTemplate & "], ""WebsiteSkin"":[" & xWebsiteSkin & "]}"
+	xSettings = "{""PageSystem"":" & xPageSystem & ", ""BlockGroup"":" & xBlockGroup & ", ""PageGroup"":" & xPageGroup & ", ""BoxTemplate"":" & xBoxTemplate & ", ""WebsiteSkin"":" & xWebsiteSkin & "}"
 
-	message = ""
+	isDOMFSite = checkDOMFAvailability()
+
 	if isDOMFSite = true then 
 		message = "This is already a DOMF site. No upgrade required."
 	else 
@@ -163,7 +147,7 @@ sub makeDOMF()
 	delOldMenu = replace(Request.Form("delOldMenu"),"'","''")
 	addDefaultStockTypes = replace(Request.Form("addDefaultStockTypes"),"'","''")
 
-	isDOMFSite = checkDOMFAvailability("", "", "", "", "")
+	isDOMFSite = checkDOMFAvailability()
 
 	if isDOMFSite then 
 		response.AddHeader "X-JSON", "{""EntityType"":""ShowMessage"",""MessageText"":""This site has already been upgraded to DOMF. Operation terminated.""}"

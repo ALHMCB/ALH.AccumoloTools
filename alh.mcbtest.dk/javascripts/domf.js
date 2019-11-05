@@ -1,7 +1,6 @@
 var Domf = new function () {
 	let self = this;
 	var $warning;
-	var $formSettings;
 	var $isNewSite = 0;
 	var $isB2B = 0;
 	var $delOldMenu = 0;
@@ -13,22 +12,31 @@ var Domf = new function () {
 
 		$warning = $('.warning');
 
-		$formSettings = $('#formDOMFSettings');
-		
 		/* Event binding */
 		$('#ddlDOMFSiteList').on('change', function() {
-			SiteUtils.setSiteGuid($(this).val());
+			SiteUtils.setSiteGuid(this.value);
 
 			self.getDOMFStatus($('#formDOMFView').eq(0).serialize(), SiteUtils.handleResponse);
 
 			//Update query string with new siteguid parameter
-			Location.UpdateURLHash([{"key":"siteguid", "value": $(this).val()}]);
+			Location.UpdateURLHash([{"key":"siteguid", "value": this.value}]);
 		});
 
 		$('#chkNewSite').on('change', function() {
 			$isNewSite = this.checked ? this.value : 0;
 
-			$('#blockWebbizScript').toggleClass('hidden', !this.checked);
+			//$('#blockWebbizScript').toggleClass('hidden', !this.checked);
+
+			if($isNewSite == 1) {
+				$('#blockWebbizScript.hidden').removeClass('hidden');
+			}
+			else {
+				$('#blockWebbizScript:not(.hidden)').addClass('hidden');
+				$('#blockOldMenu:not(.hidden)').addClass('hidden');
+				$('#chkDelOldMenu').prop('checked', false);
+				$('#blockStockType:not(.hidden)').addClass('hidden');
+				$('#chkStockType').prop('checked', false);
+			}
 		});
 
 		$('#chkB2B').on('change', function() {

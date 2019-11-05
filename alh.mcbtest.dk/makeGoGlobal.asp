@@ -4,8 +4,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title>MCB Accumolo - Go Global maker</title>
 		<link rel="stylesheet" href="css/theme.css" type="text/css" />
-		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
-		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 		<script type="text/javascript" src="javascripts/config.js"></script>
 		<script type="text/javascript" src="javascripts/utils.js"></script>
 		<script type="text/javascript" src="javascripts/goglobal.js"></script>
@@ -80,17 +79,19 @@
 					</div>
 					<div class="gridRow">
 						<div class="gridCell wide">
-							<input type="text" placeholder="Filter country" name="txtFilter" id="txtFilter">
+							<input type="text" placeholder="Enter Country name or GUID or ISO code to filter" name="txtFilter" id="txtFilter">
 						</div>
 					</div>
 				</div>
-				<div class="grid" id="tblCountryList">
+				<div class="grid" id="tblCountryListHeader">
 					<div class="gridRow gridHeader">
 						<div class="gridCell cName">Country</div>
 						<div class="gridCell">GUID</div>
 						<div class="gridCell">IsoCode</div>
 						<div class="gridCell">Is EU Member</div>
 					</div>
+				</div>
+				<div class="grid" id="tblCountryList">
 				</div>
 			</form>
 		</div>

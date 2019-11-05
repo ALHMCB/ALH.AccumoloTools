@@ -7,6 +7,30 @@ var GoGlobal = new function() {
 		SiteUtils.setTargetDropdownList($('#ddlSiteList'));
 		SiteUtils.Init();
 		self.getCountryList();
+
+		/* Event binding */
+		$('#ddlSiteList').on('change', function() {
+			SiteUtils.setSiteGuid(this.value);
+
+			self.getLangAndCurrency($('#formGoGlobalView').eq(0).serialize());
+
+			//Update query string with new siteguid parameter
+			Location.UpdateURLHash([{"key":"siteguid", "value": this.value}]);
+		});
+
+		$('#btnAddLanguage').on('click', function() {
+			self.AddEntity("language");
+		})
+
+		$('#btnAddCurrency').on('click', function() {
+			self.AddEntity("currency");	
+		})
+
+		$('#txtFilter').on('keyup', function() {
+			self.printCountryList(this.value);
+		})
+
+		/* e:Event binding */
 	}
 
 	this.getCountryList = function() {
@@ -18,18 +42,9 @@ var GoGlobal = new function() {
 		$.post($proxy, {f:'loadCountry'}, function(data, status, xhr) {
 			obj = $.parseJSON(data);
 
-			SiteUtils.countryList = obj;
+			GoGlobal.countryList = obj;
 
-			var countryList = "";
-			obj.forEach(function(aCountry) {
-				countryList += "<div class=\"gridRow\">" + 
-									"<div class=\"gridCell cName\">" + aCountry.Name + "</div>" +
-									"<div class=\"gridCell\">" + aCountry.Guid + "</div>" +
-									"<div class=\"gridCell\">" + aCountry.IsoCode + "</div>" +
-									"<div class=\"gridCell\">" + aCountry.IsEuMember + "</div>" +
-								"</div>";
-			});
-			$('#tblCountryList').append(countryList);
+			GoGlobal.printCountryList();
 
 			SiteUtils.hideLoader();
 			SiteUtils.hideMessage();
@@ -37,6 +52,44 @@ var GoGlobal = new function() {
 		}).fail(function(data) {
 			SiteUtils.showResponseMessage(data);
 		});
+	}
+
+	this.printCountryList = function(key = "") {
+		const countryTable = $('#tblCountryList');
+		countryTable.empty();
+
+		if(GoGlobal.countryList != null && typeof(GoGlobal.countryList) == "object") {
+
+			let countryList = "";
+
+			if(key != "") {
+				key = key.toLowerCase();
+				
+				GoGlobal.countryList.forEach(function(aCountry) {
+					
+					if(aCountry.Name.toLowerCase().indexOf(key) !== -1 || aCountry.Guid.indexOf(key) !== -1 || aCountry.IsoCode.toLowerCase().indexOf(key) !== -1) {
+						countryList += "<div class=\"gridRow\">" + 
+										"<div class=\"gridCell cName\">" + aCountry.Name + "</div>" +
+										"<div class=\"gridCell\">" + aCountry.Guid + "</div>" +
+										"<div class=\"gridCell\">" + aCountry.IsoCode + "</div>" +
+										"<div class=\"gridCell\">" + aCountry.IsEuMember + "</div>" +
+									"</div>";
+					}
+				});
+			}
+			else {
+				GoGlobal.countryList.forEach(function(aCountry) {					
+					countryList += "<div class=\"gridRow\">" + 
+									"<div class=\"gridCell cName\">" + aCountry.Name + "</div>" +
+									"<div class=\"gridCell\">" + aCountry.Guid + "</div>" +
+									"<div class=\"gridCell\">" + aCountry.IsoCode + "</div>" +
+									"<div class=\"gridCell\">" + aCountry.IsEuMember + "</div>" +
+								"</div>";
+				});
+			}
+				
+			countryTable.append(countryList);
+		}
 	}
 
 	this.getLangAndCurrency = function(param) {
@@ -140,24 +193,4 @@ $(document).ready(function() {
 	
 	// Form initialize
 	GoGlobal.Init();
-	
-	/* Event binding */
-	$('#ddlSiteList').on('change', function() {
-		SiteUtils.setSiteGuid($(this).val());
-
-		GoGlobal.getLangAndCurrency($('#formGoGlobalView').eq(0).serialize());
-
-		//Update query string with new siteguid parameter
-		Location.UpdateURLHash([{"key":"siteguid", "value": $(this).val()}]);
-	});
-
-	$('#btnAddLanguage').on('click', function() {
-		GoGlobal.AddEntity("language");
-	})
-
-	$('#btnAddCurrency').on('click', function() {
-		GoGlobal.AddEntity("currency");	
-	})
-
-	/* e:Event binding */
 });

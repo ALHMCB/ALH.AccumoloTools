@@ -70,6 +70,10 @@ body,html {
     font-weight: normal;
 }
 
+#txtFilter {
+    width:  350px;
+}
+
 #tblCountryList {
     width: 640px;
 }
